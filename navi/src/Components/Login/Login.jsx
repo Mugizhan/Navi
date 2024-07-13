@@ -19,7 +19,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/login', {
+      const response = await axios.post(`${import.meta.env.VITE_REACT_APP_URI}/login`, {
         shopcode: shopCode,
         username: user,
         password: password
