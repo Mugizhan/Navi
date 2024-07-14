@@ -27,23 +27,23 @@ const Admin = () => {
   const [editImage, editFoodImage] = useState("");
   const [editCategory, editFoodCategory] = useState("");
 
+  useEffect(() => {
   const fetchUser = async () => {
     setLoading(true);
-    
     try {
       const res = await axios.get(`${import.meta.env.VITE_REACT_APP_URI}/users`);
       setUser(res.data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      setError(err.message);
-      console.log(err);
+      setError(err.message || "Failed to fetch user data");
+      console.error(err);
     }
   };
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  fetchUser();
+}, []);
+
   
 
  
