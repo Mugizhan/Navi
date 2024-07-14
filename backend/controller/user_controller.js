@@ -1,7 +1,7 @@
 const User = require('../model/user_model');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const MY_SECRET_KEY = 'helloworld'
+const MY_SECRET_KEY = 'your_secret_key_here'; 
 
 
 const login = async (req, res, next) => {
@@ -61,39 +61,39 @@ const login = async (req, res, next) => {
 };
 
 const verifyToken = (req, res, next) => {
-  const cookie = req.headers.cookie;
-  const istoken = cookie ? cookie.split("=")[1] : null;
-
-  if (!istoken) {
-    return res.status(404).json({ message: "No token found" });
-  }
-
-  jwt.verify(String(istoken), MY_SECRET_KEY, (err, user) => {
-    if (err) {
-      return res.status(400).json({ message: "Invalid token" });
+    const cookie = req.headers.cookie;
+    const istoken = cookie ? cookie.split("=")[1] : null;
+  
+    if (!istoken) {
+      return res.status(404).json({ message: "No token found" });
     }
-    req.id = user.id;
-    next();
-  });
-};
-
-const getUser = async (req, res, next) => {
-  const userId = req.id;
-  let user;
-
-  try {
-    user = await User.findById(userId, "-password");
-  } catch (err) {
-    return res.status(500).json({ message: "Server Error" });
-  }
-
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  return res.status(200).json(user);
-};
-
+  
+    jwt.verify(String(istoken), MY_SECRET_KEY, (err, user) => {
+      if (err) {
+        return res.status(400).json({ message: "Invalid token" });
+      }
+      req.id = user.id;
+      next();
+    });
+  };
+  
+  const getUser = async (req, res, next) => {
+    const userId = req.id;
+    let user;
+  
+    try {
+      user = await User.findById(userId, "-password");
+    } catch (err) {
+      return res.status(500).json({ message: "Server Error" });
+    }
+  
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+  
+    return res.status(200).json(user);
+  };
+  
 const chiefEntry = async (req, res, next) => {
   const { chiefname, chiefpassword } = req.body;
   const id = req.params.id;
