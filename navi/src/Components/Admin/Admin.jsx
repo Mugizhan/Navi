@@ -26,20 +26,24 @@ const Admin = () => {
   const [editPrice, editFoodPrice] = useState("");
   const [editImage, editFoodImage] = useState("");
   const [editCategory, editFoodCategory] = useState("");
-
 const fetchUser = async () => {
-  setLoading(true);
 
-  try {
-    const res = await axios.get('https://navi-backend-rbza.onrender.com/users');
-    setUser(res.data);
-    setLoading(false);
-  } catch (err) {
-    setLoading(false);
-    setError(err.response ? err.response.data.message : "Network Error"); // Display more specific error message if available
-    console.log(err);
-  }
-}; 
+  useEffect(() => {
+    const fetchUser = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get('https://navi-backend-rbza.onrender.com/users');
+        setUser(res.data);
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+        setError(err.response ? err.response.data.message : "Network Error");
+        console.log(err);
+      }
+    };
+
+    fetchUser();
+  }, []); // Fetch user data on component mount
 
   const handleBack = (e) => {
     e.preventDefault();
@@ -52,13 +56,13 @@ const fetchUser = async () => {
       alert("Please fill out all fields");
       return;
     }
-    alert(chiefName+chiefPass)
 
     setLoading(true);
-    const User={
-      chiefname:chiefName,
-      chiefpassword:chiefPass
-    }
+    const User = {
+      chiefname: chiefName,
+      chiefpassword: chiefPass
+    };
+
     try {
       const res = await axios.put(`${import.meta.env.VITE_REACT_APP_URI}/chief/${user._id}`, User);
       alert(res.data.message);
@@ -73,81 +77,74 @@ const fetchUser = async () => {
   const handleFoodAdd = async (e) => {
     e.preventDefault();
     if (!foodName || !foodPrice || !foodCategory || !foodImage) {
-        alert("Please fill out all fields");
-        return;
+      alert("Please fill out all fields");
+      return;
     }
 
     setLoading(true);
     try {
-        const res = await axios.put(`${import.meta.env.VITE_REACT_APP_URI}/food/${user._id}`, { 
-            foodname: foodName, 
-            foodprice: foodPrice, 
-            foodcategory: foodCategory, 
-            foodimage: foodImage // Assuming foodImage is the URL
-        });
-        alert(res.data.message);
-        setLoading(false);
-    } catch (err) {
-        setLoading(false);
-        console.error(err);
-        alert(err.message || "An error occurred");
-    }
-};
-const foodEdit = (id, index) => {
-  setEdit(true);
-  setIndex(index);
-
-  const foodItem = user.food[index];
-  setFoodName(foodItem.foodname);
-  setFoodPrice(foodItem.foodprice);
-  setFoodImage(foodItem.foodimage);
-  setFoodCategory(foodItem.foodcategory);
-};
-
-const handleUpdateFood = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  try {
-      const res = await axios.put(`${import.meta.env.VITE_REACT_APP_URI}/foodEdit/${user._id}`, { 
-          foodname: foodName, 
-          foodprice: foodPrice, 
-          foodcategory: foodCategory, 
-          foodimage: foodImage,
-          index: Index // Correctly passing the index
+      const res = await axios.put(`${import.meta.env.VITE_REACT_APP_URI}/food/${user._id}`, {
+        foodname: foodName,
+        foodprice: foodPrice,
+        foodcategory: foodCategory,
+        foodimage: foodImage
       });
       alert(res.data.message);
-      setEdit(false)
-  } catch (err) {
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.error(err);
+      alert(err.message || "An error occurred");
+    }
+  };
+
+  const foodEdit = (id, index) => {
+    setEdit(true);
+    setIndex(index);
+
+    const foodItem = user.food[index];
+    setFoodName(foodItem.foodname);
+    setFoodPrice(foodItem.foodprice);
+    setFoodImage(foodItem.foodimage);
+    setFoodCategory(foodItem.foodcategory);
+  };
+
+  const handleUpdateFood = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await axios.put(`${import.meta.env.VITE_REACT_APP_URI}/foodEdit/${user._id}`, {
+        foodname: foodName,
+        foodprice: foodPrice,
+        foodcategory: foodCategory,
+        foodimage: foodImage,
+        index: Index // Pass index for updating specific food item
+      });
+      alert(res.data.message);
+      setEdit(false);
+    } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || "An error occurred");
-  } finally {
+    } finally {
       setLoading(false);
-  }
-};
+    }
+  };
 
+  const deleteFood = async () => {
+    try {
+      const res = await axios.put(`${import.meta.env.VITE_REACT_APP_URI}/fooddelete/${user._id}`, {
+        index: Index // Pass index for deleting specific food item
+      });
+      alert(res.data.message);
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "An error occurred");
+    }
+  };
 
-const deleteFood = async () => {
-  // Assuming Index is defined somewhere in your client-side code
-  alert(Index); // Just for debugging
-
-  try {
-    const res = await axios.put(`${import.meta.env.VITE_REACT_APP_URI}/fooddelete/${user._id}`, {
-      index: Index // Pass index in the request body
-    });
-    alert(res.data.message); // Alert success message
-  } catch (err) {
-    console.error(err); // Log any errors
-    alert(err.response?.data?.message || "An error occurred"); // Alert error message
-  }
-};
-
-
-const GenerateQr=()=>{
-  navigate('/qr')
-}
-
-
-
+  const GenerateQr = () => {
+    navigate('/qr');
+  };
 
 
   return (
