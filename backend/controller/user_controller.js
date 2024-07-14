@@ -1,7 +1,7 @@
 const User = require('../model/user_model');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const MY_SECRET_KEY = helloworld
+const MY_SECRET_KEY = 'helloworld'
 
 
 const login = async (req, res, next) => {
@@ -26,7 +26,6 @@ const login = async (req, res, next) => {
     }
 
     const token = jwt.sign({ id: isUser._id }, MY_SECRET_KEY, { expiresIn: '1h' });
-    console.log(token)
 
     res.status(200).cookie(String(isUser._id), token, {
       path: '/',
