@@ -76,6 +76,7 @@ const verifyToken = (req, res, next) => {
   });
 };
 
+
 const getUser = async (req, res, next) => {
   const userId = req.id;
   let user;
