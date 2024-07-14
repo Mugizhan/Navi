@@ -27,26 +27,19 @@ const Admin = () => {
   const [editImage, editFoodImage] = useState("");
   const [editCategory, editFoodCategory] = useState("");
 
-  useEffect(() => {
-  const fetchUser = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`${import.meta.env.VITE_REACT_APP_URI}/users`);
-      setUser(res.data);
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      setError(err.message || "Failed to fetch user data");
-      console.error(err);
-    }
-  };
+const fetchUser = async () => {
+  setLoading(true);
 
-  fetchUser();
-}, []);
-
-  
-
- 
+  try {
+    const res = await axios.get('https://navi-backend-rbza.onrender.com/users');
+    setUser(res.data);
+    setLoading(false);
+  } catch (err) {
+    setLoading(false);
+    setError(err.response ? err.response.data.message : "Network Error"); // Display more specific error message if available
+    console.log(err);
+  }
+}; 
 
   const handleBack = (e) => {
     e.preventDefault();
