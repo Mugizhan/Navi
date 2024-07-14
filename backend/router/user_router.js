@@ -14,7 +14,7 @@ const {
 const router = express.Router();
 
 router.post('/login', login);
-router.get('/users', verifyToken, getUser);
+router.get('/users', verifyToken, getUser); // Protected route requiring token verification
 router.put('/chief/:id', chiefEntry);
 router.put('/food/:id', foodEntry);
 router.put('/foodEdit/:id', foodEdit);
